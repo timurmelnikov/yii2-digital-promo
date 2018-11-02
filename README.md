@@ -1,233 +1,77 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Basic Project Template</h1>
-    <br>
-</p>
+## Тестовое задание Digital Promo
 
-Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-rapidly creating small projects.
+### Задание
+- Поднять yii2.
+- Поставить систему доступа на основе ролей.
+- Добавить 2 роли: «Админ», «Менеджер».
+- Сделать возможность добавления Категорий.
+- Сделать возможность добавления Товаров и подвязки их к категориям.
+- Администраторы имеют полный доступ (могут добавлять, удалять и редактировать категории и товары). Менеджеры могут только просматривать категории и товары.
+- Вывести все категории на сайт. При переходе на категорию отображать все товары, которые подвязаны к данной категории.
 
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
+### Системные требования
+PHP - 7.1 и выше (писал на 7.2.10)
+MySQL - 5.7.24
+nginx - 1.14 
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-basic.svg)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-basic.svg)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-basic.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-basic)
+### Установка
 
-DIRECTORY STRUCTURE
--------------------
-
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
-
-
-
-REQUIREMENTS
-------------
-
-The minimum requirement by this project template that your Web server supports PHP 5.4.0.
-
-
-INSTALLATION
-------------
-
-### Install via Composer
-
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
-
-You can then install this project template using the following command:
-
-~~~
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
-~~~
-
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
-
-~~~
-http://localhost/basic/web/
-~~~
-
-### Install from an Archive File
-
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
+- Клонировать репозиторий:
 ```
-
-You can then access the application through the following URL:
-
-~~~
-http://localhost/basic/web/
-~~~
-
-
-### Install with Docker
-
-Update your vendor packages
-
-    docker-compose run --rm php composer update --prefer-dist
-    
-Run the installation triggers (creating cookie validation code)
-
-    docker-compose run --rm php composer install    
-    
-Start the container
-
-    docker-compose up -d
-    
-You can then access the application through the following URL:
-
-    http://127.0.0.1:8000
-
-**NOTES:** 
-- Minimum required Docker engine version `17.04` for development (see [Performance tuning for volume mounts](https://docs.docker.com/docker-for-mac/osxfs-caching/))
-- The default configuration uses a host-volume in your home directory `.docker-composer` for composer caches
-
-
-CONFIGURATION
--------------
-
-### Database
-
-Edit the file `config/db.php` with real data, for example:
-
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
+git clone https://github.com/timurmelnikov/yii2-digital-promo.git
 ```
-
-**NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
-
-
-TESTING
--------
-
-Tests are located in `tests` directory. They are developed with [Codeception PHP Testing Framework](http://codeception.com/).
-By default there are 3 test suites:
-
-- `unit`
-- `functional`
-- `acceptance`
-
-Tests can be executed by running
+- Установить пакеты composer:
+```
+composer install
+```
+- Настроить WEB-сервер (хост для yii2-digital-promo)
+Я использую NGINX, прилагаю конфиг-файл - yii2-digital-promo/my_files/yii2-digital-promo
+- Создать БД с именем yii2_digital_promo:
+```mysql
+CREATE SCHEMA yii2_digital_promo CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+- Накатить миграции
 
 ```
-vendor/bin/codecept run
+./yii migrate/up
 ```
 
-The command above will execute unit and functional tests. Unit tests are testing the system components, while functional
-tests are for testing user interaction. Acceptance tests are disabled by default as they require additional setup since
-they perform testing in real browser. 
+### Решение
+
+#### Поднять yii2.
+Yii2 поднял с шаблоном basic
+
+#### Поставить систему доступа на основе ролей.
+
+В качестве компонента авторизации authManager, использовал yii\rbac\DbManager
+
+#### Добавить 2 роли: «Админ», «Менеджер».
+
+Сделал 2 роли «Админ», «Менеджер» (admin, manager). Они поднимаются автоматически, при накатывании миграций.
+Также, автоматом, создаются 4 пользователя:
+- admin с ролью admin
+- manager с ролью manager
+- user1 без роли (Админ, может задать ее в панели управления пользователей)
+- user2 без роли (Админ, может задать ее в панели управления пользователей)
+У всех пользователей пароль - 111
+Пароли, хранятся в базе "открытым текстом" без хеширования. Я сделал это намеренно, для облегчения работы с тестовым приложением. Пароль можно посмотреть/изменить прямо в базе. Понимаю, что в продакшене ТАК ДЕЛАТЬ НЕЛЬЗЯ, но это тестовое приложение.
+Управление пользователями - http://yii2-digital-promo/user, доступно только Админу
+
+####- Сделать возможность добавления Категорий.
+
+На странице категорий - http://yii2-digital-promo/category, реализовано управление категориями. Если у категории есть товары, то она отображается в виде ссылки на эти товары с указанием их количества. Добавление, изменение и удаление доступно только Админу, просмотр списка Админу и Менеджеру.
 
 
-### Running  acceptance tests
+#### Сделать возможность добавления Товаров и подвязки их к категориям.
 
-To execute acceptance tests do the following:  
-
-1. Rename `tests/acceptance.suite.yml.example` to `tests/acceptance.suite.yml` to enable suite configuration
-
-2. Replace `codeception/base` package in `composer.json` with `codeception/codeception` to install full featured
-   version of Codeception
-
-3. Update dependencies with Composer 
-
-    ```
-    composer update  
-    ```
-
-4. Download [Selenium Server](http://www.seleniumhq.org/download/) and launch it:
-
-    ```
-    java -jar ~/selenium-server-standalone-x.xx.x.jar
-    ```
-
-    In case of using Selenium Server 3.0 with Firefox browser since v48 or Google Chrome since v53 you must download [GeckoDriver](https://github.com/mozilla/geckodriver/releases) or [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and launch Selenium with it:
-
-    ```
-    # for Firefox
-    java -jar -Dwebdriver.gecko.driver=~/geckodriver ~/selenium-server-standalone-3.xx.x.jar
-    
-    # for Google Chrome
-    java -jar -Dwebdriver.chrome.driver=~/chromedriver ~/selenium-server-standalone-3.xx.x.jar
-    ``` 
-    
-    As an alternative way you can use already configured Docker container with older versions of Selenium and Firefox:
-    
-    ```
-    docker run --net=host selenium/standalone-firefox:2.53.0
-    ```
-
-5. (Optional) Create `yii2_basic_tests` database and update it by applying migrations if you have them.
-
-   ```
-   tests/bin/yii migrate
-   ```
-
-   The database configuration can be found at `config/test_db.php`.
+На странице продуктов(товаров) - http://yii2-digital-promo/product реализовано управление продуктами Добавление, изменение и удаление доступно только Админу, просмотр списка Админу и Менеджеру. При добавлении/изменении продукта, выбор категории, происходит при помощи компонента Select2 и AJAX поисковых запросов. То-есть, если список категорий будет большой - он не весь "прилетит" на форму редактирования.
 
 
-6. Start web server:
+#### Администраторы имеют полный доступ (могут добавлять, удалять и редактировать категории и товары). Менеджеры могут только просматривать категории и товары.
 
-    ```
-    tests/bin/yii serve
-    ```
+В случае, если нет прав - пользователь будет переброшен на страницу с ошибкой Forbidden (#403)
 
-7. Now you can run all available tests
 
-   ```
-   # run all available tests
-   vendor/bin/codecept run
+#### Вывести все категории на сайт. При переходе на категорию отображать все товары, которые подвязаны к данной категории.
 
-   # run acceptance tests
-   vendor/bin/codecept run acceptance
-
-   # run only unit and functional tests
-   vendor/bin/codecept run unit,functional
-   ```
-
-### Code coverage support
-
-By default, code coverage is disabled in `codeception.yml` configuration file, you should uncomment needed rows to be able
-to collect code coverage. You can run your tests and collect coverage with the following command:
-
-```
-#collect coverage for all tests
-vendor/bin/codecept run -- --coverage-html --coverage-xml
-
-#collect coverage only for unit tests
-vendor/bin/codecept run unit -- --coverage-html --coverage-xml
-
-#collect coverage for unit and functional tests
-vendor/bin/codecept run functional,unit -- --coverage-html --coverage-xml
-```
-
-You can see code coverage output under the `tests/_output` directory.
+На главной странице отображаются товары (Ну... Типа это интернет-магазин), они видны всем, даже не авторизированным пользователям. Здесь, я применил пагинацию + Pjax + использовал свой виджет (https://github.com/timurmelnikov/yii2-loading-overlay), о котором говорил на собеседовании. Сверху, отображаются категории, в которых есть товары. При клике на категорию - происходит отбор товаров только этой категории.

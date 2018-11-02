@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\Category;
+use app\models\Product;
+use app\models\ProductSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -19,7 +22,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
@@ -30,7 +33,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -61,7 +64,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $categoryModel = Category::find()
+            ->innerJoin(Product::tableName(), Product::tableName() . '.category_id=' . Category::tableName() . '.id')
+            ->all();
+        $currentCategory =  Yii::$app->request->get()['ProductSearch']['category_id'] ?? null;
+        $dataProvider = (new ProductSearch())->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize = 6;
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+            'categoryModel' => $categoryModel,
+            'currentCategory' => $currentCategory
+        ]);
+
     }
 
     /**
@@ -98,31 +112,5 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
 
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 }
